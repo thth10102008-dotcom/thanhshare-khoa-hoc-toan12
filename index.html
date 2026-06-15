@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lộ Trình Học Toán 12 Toàn Diện - Full 6 Chương</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+            --card-bg: #fff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Khóa toàn bộ nội dung web khi chưa có mã */
+        #content-wrapper {
+            display: flex;
+            width: 100%;
+            filter: blur(8px); /* Làm mờ */
+            pointer-events: none; /* Không cho click */
+            transition: filter 0.5s ease;
+        }
+
+        /* Form Nhập Mã Điểm Danh */
+        #lock-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(44, 62, 80, 0.96);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .lock-box {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+        }
+
+        .lock-box h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .lock-box p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .btn-get-code {
+            display: inline-block;
+            background: #e74c3c;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            transition: background 0.2s;
+        }
+
+        .btn-get-code:hover { background: #c0392b; }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            outline: none;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .input-group input:focus { border-color: #3498db; }
+
+        .btn-submit {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 0 25px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-submit:hover { background: #219653; }
+
+        #error-msg {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            font-weight: bold;
+            display: none;
+            margin-top: 5px;
+        }
+
+        /* Sidebar điều hướng */
+        .sidebar {
+            width: 320px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar h2 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255,255,255,0.1);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .sidebar ul { list-style: none; }
+        .sidebar li { margin-bottom: 8px; }
+        .sidebar a {
+            color: #ecf0f1;
+            text-decoration: none;
+            display: block;
+            padding: 10px 12px;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            transition: all 0.3s;
+            line-height: 1.4;
+        }
+        .sidebar a:hover { background-color: var(--accent-color); transform: translateX(5px); }
+
+        /* Khu vực hiển thị chính */
+        .main-content {
+            margin-left: 320px;
+            padding: 40px;
+            width: calc(100% - 320px);
+        }
+
+        .header {
+            margin-bottom: 40px;
+            text-align: center;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .header h1 { font-size: 2.2rem; margin-bottom: 10px; }
+        .header p { color: #e0e0e0; font-size: 1rem; }
+
+        /* Định dạng khối Chương & Bài học */
+        .chapter-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            scroll-margin-top: 20px;
+        }
+
+        .chapter-title {
+            color: #e74c3c;
+            font-size: 1.35rem;
+            border-left: 5px solid #e74c3c;
+            padding-left: 15px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        .lesson-block {
+            margin-bottom: 30px;
+            background: #fdfefe;
+            border: 1px solid #eef2f3;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .lesson-title {
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+            background: #eef2f3;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+
+        /* Danh sách tiết học và nút */
+        .session-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: #fff;
+            border-bottom: 1px dashed #eee;
+            margin-bottom: 6px;
+            transition: background 0.2s;
+        }
+
+        .session-item:hover { background: #f4f6f7; }
+
+        .session-name {
+            font-size: 0.95rem;
+            color: #444;
+            flex: 1;
+            padding-right: 20px;
+            font-weight: 500;
+        }
+
+        .btn-group { display: flex; gap: 6px; }
+
+        .btn {
+            text-decoration: none;
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+            min-width: 85px;
+            transition: all 0.2s;
+        }
+
+        .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+
+        .btn-youtube { background-color: #ff0000; }
+        .btn-docs { background-color: #27ae60; }
+        .btn-btvn { background-color: #f39c12; }
+        .btn-sol { background-color: #8e44ad; }
+        .btn-empty { background-color: #e0e0e0; color: #aaa; pointer-events: none; font-weight: normal; }
+
+        @media (max-width: 1024px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; position: relative; }
+            .main-content { width: 100%; margin-left: 0; padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="lock-screen">
+        <div class="lock-box">
+            <h3>🔑 ĐIỂM DANH ĐỂ VÀO HỌC</h3>
+            <p>Trang web yêu cầu nhập mã điểm danh để mở khóa bài học. Mã có thời hạn trong 24 giờ. Vui lòng bấm vào nút dưới đây để lấy mã.</p>
+            
+            <a href="https://link4m.net/WuLnF" target="_blank" class="btn-get-code">👉 BẤM VÀO ĐÂY ĐỂ LẤY MÃ ĐIỂM DANH 👈</a>
+            
+            <div class="input-group">
+                <input type="text" id="code-input" placeholder="Nhập mã điểm danh tại đây...">
+                <button class="btn-submit" onclick="checkCode()">VÀO HỌC</button>
+            </div>
+            <p id="error-msg">❌ Mã điểm danh không chính xác. Vui lòng thử lại!</p>
+        </div>
+    </div>
+
+    <div id="content-wrapper">
+        
+        <div class="sidebar">
+            <h2>Lộ Trình Toán 12</h2>
+            <ul>
+                <li><a href="#chuong1"><b>Chương I:</b> Ứng Dụng Đạo Hàm Khảo Sát Hàm Số</a></li>
+                <li><a href="#chuong2"><b>Chương II:</b> Vectơ & Hệ Tọa Độ Không Gian</a></li>
+                <li><a href="#chuong3"><b>Chương III:</b> Mẫu Số Liệu Ghép Nhóm</a></li>
+                <li><a href="#chuong4"><b>Chương IV:</b> Nguyên Hàm Và Tích Phân</a></li>
+                <li><a href="#chuong5"><b>Chương V:</b> Phương Trình Hình Học Oxyz</a></li>
+                <li><a href="#chuong6"><b>Chương VI:</b> Xác Suất Có Điều Kiện</a></li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <h1>HỆ THỐNG KHÓA HỌC TOÁN 12 TOÀN DIỆN</h1>
+                <p>Đầy đủ video bài giảng, file tài liệu, bài tập về nhà và lời giải chi tiết</p>
+            </div>
+
+            <div class="chapter-section" id="chuong1">
+                <h2 class="chapter-title">CHƯƠNG I: ỨNG DỤNG ĐẠO HÀM ĐỂ KHẢO SÁT VÀ VẼ ĐỒ THỊ HÀM SỐ</h2>
+                
+                <div class="lesson-block">
+                    <div class="lesson-title">[BÀI 1] TÍNH ĐƠN ĐIỆU CỦA HÀM SỐ</div>
+                    <div class="session-item">
+                        <span class="session-name">[TIẾT 1] Tìm khoảng Đồng biến Nghịch biến</span>
+                        <div class="btn-group">
+                            <a href="https://www.youtube.com/watch?v=tYQ-jRLEBJg" target="_blank" class="btn btn-youtube">Video</a>
+                            <a href="https://drive.google.com/file/d/1AE1WTLNeiVkCWOo50A2uvl3_NCxqJwG3/view" target="_blank" class="btn btn-docs">Tài Liệu</a>
+                            <a href="https://drive.google.com/file/d/13F4ghQW96LB-N6A1CWBiSeyQMT5-tdqd/view?usp=sharing" target="_blank" class="btn btn-btvn">BTVN</a>
+                            <a href="https://thaychi.net/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc.html?bg=4002&playvideo=iv6qRc1qmQs" target="_blank" class="btn btn-sol">Lời Giải</a>
+                        </div>
+                    </div>
+                    <div class="session-item">
+                        <span class="session-name">LUYỆN TẬP TRẮC NGHIỆM ĐÚNG SAI (PHẦN 1)</span>
+                        <div class="btn-group">
+                            <a href="https://www.youtube.com/watch?v=IWXJ2st9DSU" target="_blank" class="btn btn-youtube">Video</a>
+                            <a href="https://drive.google.com/file/d/1zRQgCWIhTHy86aHj-f0U8Lz7J-s7vKs5/view?usp=drive_link" target="_blank" class="btn btn-docs">Tài Liệu</a>
+                            <span class="btn btn-empty">Không có</span>
+                            <span class="btn btn-empty">Không có</span>
+                        </div>
+                    </div>
+                    <div class="session-item">
+                        <span class="session-name">LUYỆN TẬP TRẮC NGHIỆM ĐÚNG SAI (PHẦN 2)</span>
+                        <div class="btn-group">
+                            <a href="https://www.youtube.com/watch?v=DHncfLjYYCQ" target="_blank" class="btn btn-youtube">Video</a>
+                            <a href="https://drive.google.com/file/d/1KqtiSdFbXfC23K9AUGBoeB1k6Ip9NJIW/view?usp=drive_link" target="_blank" class="btn btn-docs">Tài Liệu</a>
+                            <span class="btn btn-empty">Không có</span>
+                            <span class="btn btn-empty">Không có</span>
+                        </div>
+                    </div>
+                    <div class="session-item">
+                        <span class="session-name">[TIẾT 2] Biện luận tham số m (Buổi 1)</span>
+                        <div class="btn-group">
+                            <a href="https://www.youtube.com/watch?v=tqJt4Mkt4p0" target="_blank" class="btn btn-youtube">Video</a>
+                            <a href="https://drive.google.com/file/d/1vQl7qQtSxFLS-n9apg9qyVx0tgYDnZj2/view?usp=sharing" target="_blank" class="btn btn-docs">Tài Liệu</a>
+                            <a href="https://drive.google.com/file/d/13ImQfbfdYIJQ75hkNCUYGioc4RIqRBzO/view?usp=sharing" target="_blank" class="btn btn-btvn">BTVN</a>
+                            <a href="https://thaychi.net/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc.html?bg=4007&playvideo=crTd7hEDAho" target="_blank" class="btn btn-sol">Lời Giải</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-block">
+                    <div class="lesson-title">[BÀI 2] CỰC TRỊ HÀM SỐ</div>
+                    <div class="session-item">
+                        <span class="session-name">[TIẾT 1] Xác định cực trị (Cực đại cực tiểu)</span>
+                        <div class="btn-group">
+                            <a href="https://www.youtube.com/watch?v=SMPfLiCQVms" target="_blank" class="btn btn-youtube">Video</a>
+                            <a href="https://drive.google.com/file/d/1AGNYA9e9qcL2yx_KT6Y7Ydl6Oprtrhh8/view?usp=drive_link" target="_blank" class="btn btn-docs">Tài Liệu</a>
+                            <a href="https://drive.google.com/file/d/1djECwdeyRVm9WVgaxPYVzOlLow8gTzuJ/view?usp=sharing" target="_blank" class="btn btn-btvn">BTVN</a>
+                            <a href="https://thaychi.net/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc.html?bg=4016&playvideo=h3aS8OvFoMM" target="_blank" class="btn btn-sol">Lời Giải</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lesson-block">
+                    <div class="lesson-title">[BÀI 5 & 6] TIỆM CẬN VÀ ĐỒ THỊ HÀM SỐ</div>
+                    <div class="session-item">
+                        <span class="session-name">[TIỆM CẬN TIẾT 1] Tiệm cận đứng và tiệm cận ngang</span>
+                        <div class="btn-group">
+                            <a href="https://www.youtube.com/watch?v=kQD0SEENI7M" target="_blank" class="btn btn-youtube">Video</a>
+                            <a href="https://drive.google.com/file/d/13sSbYyXNBjhdNE9qKzAd0Lm3b3flniaz/view?usp=sharing" target="_blank" class="btn btn-docs">Tài Liệu</a>
+                            <a href="https://drive.google.com/file/d/13ofEoEfaJ4JXM8C46MtnuqOgBwLcmprL/view?usp=sharing" target="_blank" class="btn btn-btvn">BTVN</a>
+                            <a href="https://thaychi.net/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc.html?bg=4046&playvideo=XjiQmm5-zzE" target="_blank" class="btn btn-sol">Lời Giải</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chapter-section" id="chuong2">
+                <h2 class="chapter-title">CHƯƠNG II: VECTƠ VÀ HỆ TOẠ ĐỘ TRONG KHÔNG GIAN</h2>
+                <div class="lesson-block">
+                    <div class="lesson-title">[BÀI 1 & 2] PHÉP TOÁN VECTƠ VÀ TÍCH VÔ HƯỚNG</div>
+                    <div class="session-item">
+                        <span class="session-name">Góc giữa hai vectơ và tích vô hướng trong không gian</span>
+                        <div class="btn-group">
+                            <a href="https://www.youtube.com/watch?v=WfSajPMmBJ4" target="_blank" class="btn btn-youtube">Video</a>
+                            <a href="https://drive.google.com/file/d/10gNcpLiZUXzzkvllv4AvlkIrehxAycOW/view?usp=drive_link" target="_blank" class="btn btn-docs">Tài Liệu</a>
+                            <a href="https://drive.google.com/file/d/1ysx4va0Bt4jflkXN1SK0klDMGJ6gjF6t/view?usp=drive_link" target="_blank" class="btn btn-btvn">BTVN</a>
+                            <a href="https://thaychi.net/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc.html?bg=4114&playvideo=yQFw5AdW3Tw" target="_blank" class="btn btn-sol">Lời Giải</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chapter-section" id="chuong3">
+                <h2 class="chapter-title">CHƯƠNG III: MẪU SỐ LIỆU GHÉP NHÓM VÀ THỐNG KÊ</h2>
+                <div class="lesson-block">
+                    <div class="lesson-title">[BÀI 1, 2 & 3] ĐO ĐẶC TRƯNG XU THẾ TRUNG TÂM VÀ ĐỘ PHÂN TÁN</div>
+                    <div class="session-item">
+                        <span class="session-name">Phương sai và Độ lệch chuẩn của mẫu số liệu ghép nhóm</span>
+                        <div class="btn-group">
+                            <a href="https://www.youtube.com/watch?v=nK_jAeDffog" target="_blank" class="btn btn-youtube">Video</a>
+                            <a href="https://drive.google.com/file/d/1449NxJnBfqf9yt6Rm6LOOlisUSpnmdUO/view?usp=drive_link" target="_blank" class="btn btn-docs">Tài Liệu</a>
+                            <a href="https://drive.google.com/file/d/1LSqYCn7P7MfBG0fgsTo1LAwHonVRcb_c/view?usp=drive_link" target="_blank" class="btn btn-btvn">BTVN</a>
+                            <a href="https://drive.google.com/file/d/1OKWH3smtuEC8oLupCMUd14XxKf4u40lH/view?usp=drive_link" target="_blank" class="btn btn-sol">Lời Giải</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chapter-section" id="chuong4">
+                <h2 class="chapter-title">CHƯƠNG IV: NGUYÊN HÀM VÀ TÍCH PHÂN</h2>
+                <div class="lesson-block">
+                    <div class="lesson-title">[BÀI 1] NGUYÊN HÀM</div>
+                    <div class="session-item">
+                        <span class="session-name">[TIẾT 1] Định nghĩa và bảng nguyên hàm cơ bản</span>
+                        <div class="btn-group">
+                            <a href="https://www.youtube.com/watch?v=cX5gxR4ZtP0" target="_blank" class="btn btn-youtube">Video</a>
+                            <a href="https://drive.google.com/open?id=1mYPmRW9FHZPufHmpIgXYiCuJ2d3fXxym&usp=drive_fs" target="_blank" class="btn btn-docs">Tài Liệu</a>
+                            <a href="https://drive.google.com/open?id=1mz9DZfBeKaW-nHpEverQ56-mAjqIt3Xh&usp=drive_fs" target="_blank" class="btn btn-btvn">BTVN</a>
+                            <a href="https://thaychi.net/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc.html?bg=4144&playvideo=VJfhvlS1LCY" target="_blank" class="btn btn-sol">Lời Giải</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chapter-section" id="chuong5">
+                <h2 class="chapter-title">CHƯƠNG V: PHƯƠNG TRÌNH MẶT PHẲNG, ĐƯỜNG THẲNG, MẶT CẦU IN SPACE</h2>
+                <div class="lesson-block">
+                    <div class="lesson-title">[BÀI 1] PHƯƠNG TRÌNH MẶT PHẲNG</div>
+                    <div class="session-item">
+                        <span class="session-name">[TIẾT 1] Xác định các yếu tố tính góc & Vị trí tương đối</span>
+                        <div class="btn-group">
+                            <a href="https://www.youtube.com/watch?v=Yo0VX15hQeM" target="_blank" class="btn btn-youtube">Video</a>
+                            <a href="https://drive.google.com/open?id=1gTrhOcQp22UDAIas2wYo8RRX8-y2ViEV&usp=drive_fs" target="_blank" class="btn btn-docs">Tài Liệu</a>
+                            <a href="https://drive.google.com/open?id=1hFRAAgywlzduHF2NE9uK11wWDaIZRSgz&usp=drive_fs" target="_blank" class="btn btn-btvn">BTVN</a>
+                            <a href="https://thaychi.net/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc.html?bg=4246&playvideo=2ljg4ZYA4Ow" target="_blank" class="btn btn-sol">Lời Giải</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chapter-section" id="chuong6">
+                <h2 class="chapter-title">CHƯƠNG VI: XÁC SUẤT CÓ ĐIỀU KIỆN</h2>
+                <div class="lesson-block">
+                    <div class="lesson-title">[BÀI 2] CÔNG THỨC XÁC SUẤT TOÀN PHẦN VÀ CÔNG THỨC BAYES</div>
+                    <div class="session-item">
+                        <span class="session-name">[TIẾT 1] Áp dụng công thức xác suất toàn phần</span>
+                        <div class="btn-group">
+                            <a href="https://www.youtube.com/watch?v=dRwUln7nSQQ" target="_blank" class="btn btn-youtube">Video</a>
+                            <a href="https://drive.google.com/file/d/1q6Alu3ennFs2-3HiEsNsY-_qTP4C7gdK/view?usp=sharing" target="_blank" class="btn btn-docs">Tài Liệu</a>
+                            <a href="https://drive.google.com/file/d/1vqAVbN8ZA0_-N5Q3q4UnbTELf3NhYaoI/view?usp=sharing" target="_blank" class="btn btn-btvn">BTVN</a>
+                            <a href="https://thaychi.net/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc/khoa-chuyen-de-lop-12-2008-ket-noi-tri-thuc.html?bg=5098&playvideo=REo1vyO5nUc" target="_blank" class="btn btn-sol">Lời Giải</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ================= THAY ĐỔI MÃ HÀNG NGÀY TẠI ĐÂY =================
+        const SECRET_CODE = "ANSANGVOIBUNRIU"; // Bạn có thể sửa chữ TOAN12VIP thành bất kỳ mã nào bạn muốn đặt
+        // =================================================================
+
+        function checkCode() {
+            const userInput = document.getElementById("code-input").value.trim();
+            
+            if (userInput === SECRET_CODE) {
+                const now = new Date().getTime();
+                localStorage.setItem("attendance_time", now);
+                localStorage.setItem("saved_code", SECRET_CODE);
+                unlockWebsite();
+            } else {
+                document.getElementById("error-msg").style.display = "block";
+            }
+        }
+
+        function unlockWebsite() {
+            document.getElementById("lock-screen").style.display = "none";
+            const wrapper = document.getElementById("content-wrapper");
+            wrapper.style.filter = "none";
+            wrapper.style.pointerEvents = "auto";
+        }
+
+        window.onload = function() {
+            const savedTime = localStorage.getItem("attendance_time");
+            const savedCode = localStorage.getItem("saved_code");
+            const now = new Date().getTime();
+
+            // 24 giờ = 86,400,000 milliseconds
+            const timeLimit = 24 * 60 * 60 * 1000;
+
+            if (savedTime && savedCode === SECRET_CODE && (now - savedTime < timeLimit)) {
+                unlockWebsite();
+            }
+        }
+    </script>
+</body>
+</html>
